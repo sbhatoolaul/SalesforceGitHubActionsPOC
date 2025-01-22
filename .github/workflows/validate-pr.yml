@@ -1,0 +1,52 @@
+name: validate pr 
+
+on:
+  # this workflow runs when prs to the develop branch are opened/ edited with changes in the force-app folder
+  pull_request:
+    types: [opened, synchronize]
+    branches: [develop]
+    paths:
+     - 'force-app/**'
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'setup node'
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '14'
+
+      - name: 'install salesforce cli & plugins'
+        shell: bash
+        run: |
+         sudo npm install @salesforce/cli --global
+         echo y | sf plugins install sfdx-git-delta
+         sf --version
+         sf plugins --core
+
+      - name: 'checkout pr'
+        uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
+
+      - name: 'get sfdx_auth_url secret for repository'
+        shell: bash
+        run: |
+         echo ${{secrets.SFDX_AUTH_URL}} > ./SFDX_AUTH_URL.txt
+
+      - name: 'authenticate to validation org'
+        run: |
+         sf auth:sfdxurl:store -f ./SFDX_AUTH_URL.txt
+
+      - name: 'create delta packages for new, modified or deleted metadata'
+        run: | 
+            mkdir changed-sources
+            sf sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/ 
+
+      - name: 'vaidate changed components and run all test classes'
+        run: |
+         sf force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests  --json
+        
+      
+      
