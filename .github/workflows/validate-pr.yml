@@ -29,8 +29,9 @@ jobs:
          ~/cli/sf/bin/sf org login sfdx-url -f ./SFDX_AUTH_URL.txt -s -a SalesforceGitHubActionsPOC
 
       - name: 'list directory'
+        shell: bash
         run: |
-         echo ls
+         ls
       
 
       - name: 'validate deployment'
