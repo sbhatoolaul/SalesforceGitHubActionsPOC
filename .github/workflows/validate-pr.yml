@@ -24,6 +24,7 @@ jobs:
          mkdir -p ~/cli/sf
          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
          echo 'export PATH=~/cli/sf/bin:$PATH' >> ~/.bashrc
+         echo 'export PATH=~/cli/sf/bin:$PATH' >> ~/.bash_profile
 
       - name: 'check sf version'
         run: | 
