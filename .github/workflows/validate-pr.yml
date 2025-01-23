@@ -27,7 +27,7 @@ jobs:
       
       - name: 'installing sgd'
         run: | 
-         sf plugins install @salesforce/sfdx-git-delta
+         echo y | sf plugins install @salesforce/sfdx-git-delta
          
       - name: 'checkout pr'
         uses: actions/checkout@v3
