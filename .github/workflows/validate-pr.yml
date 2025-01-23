@@ -1,4 +1,4 @@
-name: validate pr 
+name: Validate PR
 
 on:
   # this workflow runs when prs to the develop branch are opened/ edited with changes in the force-app folder
@@ -12,46 +12,25 @@ jobs:
   validate-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: 'setup node'
-        uses: actions/setup-node@v3
-        with: 
-          node-version: '14'
+      - name: '1) Load repository into VM environment.'
+        uses: actions/checkout@v4
 
-      - name: 'install salesforce cli & plugins'
+      - name: '2) Install Salesforce CLI.'
         shell: bash
         run: |
          wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
          mkdir -p ~/cli/sf
          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
-         export PATH=~/cli/sf/bin:$PATH
-      
-      - name: 'installing sgd'
-        run: | 
-         echo y | sf plugins:install sfdx-git-delta
-         sf plugins 
-         
-      - name: 'checkout pr'
-        uses: actions/checkout@v3
-        with: 
-          fetch-depth: 0
 
-      - name: 'get sfdx_auth_url secret for repository'
+      - name: '3) Get SFDX_AUTH_URL secret for repository.'
         shell: bash
         run: |
-         echo ${{secrets.SFDX_AUTH_URL}} > ./SFDX_AUTH_URL.txt
+         echo ${{secrets.SFDX_AUTH_URL}} > SFDX_AUTH_URL.txt
 
-      - name: 'authenticate to validation org'
+      - name: '4) Authenticate to validation org.'
         run: |
-         sf org login sfdx-url -f ./SFDX_AUTH_URL.txt -s
+         ~/cli/sf/bin/sf org login sfdx-url -f SFDX_AUTH_URL.txt -s -a SalesforceGitHubActionsPOC      
 
-      - name: 'create delta packages for new, modified or deleted metadata'
-        run: | 
-            mkdir changed-sources
-            sf sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/ 
-
-      - name: 'vaidate changed components and run all test classes'
+      - name: '5) Validate deployment.'
         run: |
-         sf force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests  --json
-        
-      
-      
+         ~/cli/sf/bin/sf project deploy validate --manifest manifest/package.xml
