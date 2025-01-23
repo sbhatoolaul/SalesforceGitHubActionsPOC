@@ -12,21 +12,12 @@ jobs:
   validate-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: 'setup node'
-        uses: actions/setup-node@v3
-        with: 
-          node-version: '14'
-
       - name: 'install salesforce cli & plugins'
         shell: bash
         run: |
          wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
          mkdir -p ~/cli/sf
          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
-
-      - name: 'check sf version'
-        run: | 
-         ~/cli/sf/bin/sf --version
 
       - name: 'get sfdx_auth_url secret for repository'
         shell: bash
@@ -39,4 +30,4 @@ jobs:
 
       - name: 'validate deployment'
         run: |
-         ~/cli/sf/bin/sf project deploy validate --manifest manifest/package.xml
+         ~/cli/sf/bin/sf project deploy validate --manifest ./manifest/package.xml
