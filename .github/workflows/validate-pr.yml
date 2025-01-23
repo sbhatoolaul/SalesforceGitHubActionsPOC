@@ -20,11 +20,11 @@ jobs:
       - name: 'install salesforce cli & plugins'
         shell: bash
         run: |
-         npm install @salesforce/cli --global
-         sf plugins install sfdx-git-delta
-         sf --version
-         sf plugins --core
-
+         wget wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+         mkdir -p ~/cli/sf
+         tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
+         export PATH=~/cli/sf/bin:$PATH
+         
       - name: 'checkout pr'
         uses: actions/checkout@v3
         with: 
