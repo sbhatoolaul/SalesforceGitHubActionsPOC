@@ -28,7 +28,7 @@ jobs:
 
       - name: 'check sf version'
         run: | 
-         sf --version
+         ~/cli/sf/bin/sf --version
       
       - name: 'installing sgd'
         run: | 
