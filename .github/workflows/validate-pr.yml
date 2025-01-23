@@ -24,10 +24,14 @@ jobs:
          mkdir -p ~/cli/sf
          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
          export PATH=~/cli/sf/bin:$PATH
+
+      - name: 'check sf version'
+        run: | 
+         sf --version
       
       - name: 'installing sgd'
         run: | 
-         echo y | sf plugins install @salesforce/sfdx-git-delta
+         sf plugins install @salesforce/sfdx-git-delta
          
       - name: 'checkout pr'
         uses: actions/checkout@v3
