@@ -36,3 +36,7 @@ jobs:
       - name: 'authenticate to validation org'
         run: |
          ~/cli/sf/bin/sf org login sfdx-url -f ./SFDX_AUTH_URL.txt -s -a SalesforceGitHubActionsPOC
+
+      - name: 'validate deployment'
+        run: |
+         ~/cli/sf/bin/sf project deploy validate --manifest manifest/package.xml
