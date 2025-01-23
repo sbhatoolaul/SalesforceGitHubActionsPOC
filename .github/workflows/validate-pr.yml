@@ -1,4 +1,4 @@
-name: validate pr 
+name: Validate PR
 
 on:
   # this workflow runs when prs to the develop branch are opened/ edited with changes in the force-app folder
@@ -12,31 +12,25 @@ jobs:
   validate-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repo
+      - name: '1) Load repository into VM environment.'
         uses: actions/checkout@v4
 
-      - name: 'install salesforce cli & plugins'
+      - name: '2) Install Salesforce CLI.'
         shell: bash
         run: |
          wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
          mkdir -p ~/cli/sf
          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
 
-      - name: 'get sfdx_auth_url secret for repository'
+      - name: '3) Get SFDX_AUTH_URL secret for repository.'
         shell: bash
         run: |
-         echo ${{secrets.SFDX_AUTH_URL}} > ./SFDX_AUTH_URL.txt
+         echo ${{secrets.SFDX_AUTH_URL}} > SFDX_AUTH_URL.txt
 
-      - name: 'authenticate to validation org'
+      - name: '4) Authenticate to validation org.'
         run: |
-         ~/cli/sf/bin/sf org login sfdx-url -f ./SFDX_AUTH_URL.txt -s -a SalesforceGitHubActionsPOC
+         ~/cli/sf/bin/sf org login sfdx-url -f SFDX_AUTH_URL.txt -s -a SalesforceGitHubActionsPOC      
 
-      - name: 'list directory'
-        shell: bash
-        run: |
-         ls
-      
-
-      - name: 'validate deployment'
+      - name: '5) Validate deployment.'
         run: |
          ~/cli/sf/bin/sf project deploy validate --manifest manifest/package.xml
