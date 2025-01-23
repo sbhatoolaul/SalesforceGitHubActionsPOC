@@ -27,15 +27,6 @@ jobs:
       - name: 'check sf version'
         run: | 
          ~/cli/sf/bin/sf --version
-      
-      - name: 'installing sgd'
-        run: | 
-         ~/cli/sf/bin/sf plugins install @salesforce/sfdx-git-delta
-         
-      - name: 'checkout pr'
-        uses: actions/checkout@v3
-        with: 
-          fetch-depth: 0
 
       - name: 'get sfdx_auth_url secret for repository'
         shell: bash
