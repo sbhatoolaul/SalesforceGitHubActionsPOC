@@ -20,8 +20,8 @@ jobs:
       - name: 'install salesforce cli & plugins'
         shell: bash
         run: |
-         sudo npm install @salesforce/cli --global
-         echo y | sf plugins install sfdx-git-delta
+         npm install @salesforce/cli --global
+         sf plugins install sfdx-git-delta
          sf --version
          sf plugins --core
 
