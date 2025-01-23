@@ -27,8 +27,7 @@ jobs:
       
       - name: 'installing sgd'
         run: | 
-         echo y | sf plugins:install sfdx-git-delta
-         sf plugins 
+         sf plugins install @salesforce/sfdx-git-delta
          
       - name: 'checkout pr'
         uses: actions/checkout@v3
@@ -42,16 +41,4 @@ jobs:
 
       - name: 'authenticate to validation org'
         run: |
-         sf org login sfdx-url -f ./SFDX_AUTH_URL.txt -s
-
-      - name: 'create delta packages for new, modified or deleted metadata'
-        run: | 
-            mkdir changed-sources
-            sf sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/ 
-
-      - name: 'vaidate changed components and run all test classes'
-        run: |
-         sf force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests  --json
-        
-      
-      
+         sf org login sfdx-url -f ./SFDX_AUTH_URL.txt -s -a SalesforceGitHubActionsPOC
