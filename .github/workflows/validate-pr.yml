@@ -25,10 +25,10 @@ jobs:
          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
          export PATH=~/cli/sf/bin:$PATH
       
-      - name: 'Installing sgd'
+      - name: 'installing sgd'
         run: | 
-         echo y | sfdx plugins:install sfdx-git-delta
-         sfdx plugins 
+         echo y | sf plugins:install sfdx-git-delta
+         sf plugins 
          
       - name: 'checkout pr'
         uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
 
       - name: 'authenticate to validation org'
         run: |
-         sfdx auth:sfdxurl:store -f ./SFDX_AUTH_URL.txt
+         sf org login sfdx-url -f ./SFDX_AUTH_URL.txt -s
 
       - name: 'create delta packages for new, modified or deleted metadata'
         run: | 
